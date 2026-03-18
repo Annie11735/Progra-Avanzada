@@ -3,17 +3,17 @@ import os
 
 class Usuario():
     lista=[]
-    ruta_csv=r"C:/Users/DELL/Documents/Estefania/Ventanas/06-03-26/base2/personas.csv"
+    ruta_csv=r"C:/Users/annie/Downloads/Python/OOP- Progra Avanzada/Ventanas/Union_Ventanas/personas.csv"
 
-    def __init__(self, name,age, food):
+    def __init__(self, name,age, contr):
         self.nombre=name
         self.edad=age
-        self.comida=food
+        self.contra=contr
         if self not in Usuario.lista:
             Usuario.lista.append(self)
 
     def mostrar_datos(self):
-        return f"El usuario {self.nombre} tiene {self.edad} y le gusta {self.comida}"
+        return f"El usuario {self.nombre} tiene {self.edad} y su password es {self.contra}"
     
     @classmethod #método de clase
     def mostrar_lista(cls):
@@ -22,7 +22,7 @@ class Usuario():
         
     @classmethod
     def guardar_usuarios(cls):
-        campos=["nombre","edad","comida"] #nombres de las columnas de la tabla
+        campos=["nombre","edad","contraseña"] #nombres de las columnas de la tabla
 
         directorio = os.path.dirname(cls.ruta_csv)
         if not os.path.exists(directorio):
@@ -38,6 +38,18 @@ class Usuario():
             escritor=csv.DictWriter(f, fieldnames=campos, delimiter=',')
             escritor.writeheader()
             for u in cls.lista:
-                escritor.writerow({"nombre":u.nombre,"edad":u.edad,"comida":u.comida})
+                escritor.writerow({"nombre":u.nombre,"edad":u.edad,"contraseña":u.contra})
 
+    @classmethod
+    def cargar_usuarios(cls):
+        if not os.path.exists(cls.ruta_csv):
+            print("No hay base de datos previa.")
+            return
+        with open(cls.ruta_csv, "r", encoding="utf-8") as f:
+                lector=csv.DictReader(f)
 
+                cls.lista=[]
+                for fila in lector:
+                    Usuario(fila["nombre"], fila["edad"], fila["contraseña"])
+
+        print("Datos cargados exitosamente.")
